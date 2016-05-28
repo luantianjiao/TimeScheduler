@@ -8,6 +8,9 @@
 
 #import "DayMasterViewController.h"
 #import "ContentViewController.h"
+#import "HourObject.h"
+
+static NSString * const kRootKey = @"kRootKey";
 
 @interface DayMasterViewController ()
 
@@ -19,7 +22,7 @@
 
 @implementation DayMasterViewController
 
--(void)setDetailItem:(NSString *)newDetailItem{
+-(void)setDetailItem:(DayObject *)newDetailItem{
     if (_detailItem != newDetailItem) {
         _detailItem = newDetailItem;
 //        [self.tableView reloadData];
@@ -30,10 +33,29 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
+    
+    
     self.index = 0;
     self.constObjects = @[@"7:00-8:00",@"8:00-9:00",@"9:00-10:00",@"10:00-11:00",@"11:00-12:00",@"12:00-13:00",@"13:00-14:00",@"14:00-15:00",@"15:00-16:00",@"16:00-17:00",@"17:00-18:00",@"18:00-19:00",@"19:00-20:00",@"20:00-21:00",@"21:00-22:00"];
+
     
-    self.title = self.detailItem;
+    self.title = self.detailItem.day;
+    
+    //get achive
+    NSString *filePath = [self dataFilePath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        if (!self.objects) {
+            self.objects = [[NSMutableArray alloc] init];
+        }
+
+        NSData *data = [[NSMutableData alloc]
+                        initWithContentsOfFile:filePath];
+        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc]
+                                         initForReadingWithData:data];
+        self.objects = [unarchiver decodeObjectForKey:kRootKey];
+        [unarchiver finishDecoding];
+    }
+    
     
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
@@ -42,6 +64,19 @@
     
     self.contentViewController = (ContentViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    NSString *filePath = [self dataFilePath];
+    
+    NSMutableData *data = [[NSMutableData alloc] init];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc]
+                                 initForWritingWithMutableData:data];
+    [archiver encodeObject:self.objects forKey:kRootKey];
+    [archiver finishEncoding];
+    [data writeToFile:filePath atomically:YES];
+}
+
 
 - (void)viewWillAppear:(BOOL)animated {
     self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
@@ -53,12 +88,32 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (NSString *)dataFilePath
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    return [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.archive",
+                                                               self.detailItem.day]];
+}
+
 - (void)insertNewObject:(id)sender {
     if (!self.objects) {
         self.objects = [[NSMutableArray alloc] init];
     }
-    [self.objects insertObject:self.constObjects[self.index] atIndex:self.index];
+    
+//    [self.objects insertObject:self.constObjects[self.index] atIndex:self.index];
+    
+    HourObject *hour = [[HourObject alloc]init];
+    [hour setHour:self.constObjects[self.index]];
+    [hour setType:@"Running"];
+    [hour setIsDone:NO];
+    [hour setContent:@"It is a beautiful day."];
+    
+    [self.objects insertObject:hour atIndex:self.index];
+    
     self.index += 1;
+    
+    
 //    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
 //    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     [self.tableView reloadData];
@@ -69,9 +124,11 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showContent"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSString *object = self.objects[indexPath.row];
+        
+        HourObject *hour = (HourObject *)self.objects[indexPath.row];
+        
         ContentViewController *controller = (ContentViewController *)[segue destinationViewController];
-        [controller setDetailItem:object];
+        [controller setDetailItem:hour];
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
     }
@@ -89,8 +146,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DetailCell" forIndexPath:indexPath];
-
-    NSDate *object = self.objects[indexPath.row];
+    HourObject *hour = (HourObject *)self.objects[indexPath.row];
+    NSString *object = hour.hour;
     cell.textLabel.text = [object description];
     return cell;
 }

@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DayObject.h"
 @class ContentViewController;
 
 @interface DayMasterViewController : UITableViewController
 
 @property(strong,nonatomic)ContentViewController *contentViewController;
-@property (strong, nonatomic) NSString *detailItem;
+@property (strong, nonatomic) DayObject *detailItem;
 
 @end
 

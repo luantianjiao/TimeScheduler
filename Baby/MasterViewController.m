@@ -24,7 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.objects = @[@"星期天", @"星期一", @"星期二", @"星期三", @"星期四", @"星期五", @"星期六"];
+    self.objects = @[@"Sunday", @"Monday", @"Tuesday", @"Wenesday", @"Thursday", @"Friday", @"Saturday"];
     self.weekdays = [NSArray arrayWithObjects: [NSNull null], @"星期天", @"星期一", @"星期二", @"星期三", @"星期四", @"星期五", @"星期六", nil];
     
     
@@ -75,7 +75,7 @@
         
         DayMasterViewController *controller = (DayMasterViewController *)[[segue destinationViewController] topViewController];
 //        NSInteger object = indexPath.row;
-        [controller setDetailItem:object];
+        [controller setDetailItem:day];
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
     }

@@ -8,7 +8,7 @@
 
 #import "DayObject.h"
 
-static NSString * const kLinesKey = @"kLinesKey";
+static NSString * const kHoursKey = @"kHoursKey";
 
 
 @interface DayObject()
@@ -23,13 +23,23 @@ static NSString * const kLinesKey = @"kLinesKey";
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super init];
     if (self) {
-        self.hours = [aDecoder decodeObjectForKey:kLinesKey];
+//        NSString *filePath = [self dataFilePath];
+//        if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+//            NSData *data = [[NSMutableData alloc]
+//                            initWithContentsOfFile:filePath];
+//            NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc]
+//                                             initForReadingWithData:data];
+//            self.hours = [unarchiver decodeObjectForKey:kHoursKey];
+//            [unarchiver finishDecoding];
+//    }
+        self.hours = [aDecoder decodeObjectForKey:kHoursKey];
+        
     }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder; {
-    [aCoder encodeObject:self.hours forKey:kLinesKey];
+    [aCoder encodeObject:self.hours forKey:kHoursKey];
 }
 
 #pragma mark - Copying
@@ -44,37 +54,37 @@ static NSString * const kLinesKey = @"kLinesKey";
     return copy;
 }
 
-
--(void)removeHour:(HourObject *)item{
-    [_hours removeObject:item];
-    [self saveFavorites];
-}
-
--(void)addHour:(HourObject *)item{
-    [_hours insertObject:item atIndex:0];
-    [self saveFavorites];
-}
-
-
-- (NSString *)dataFilePath
-{
-    NSString *name = [NSString stringWithFormat:@"%@.archive",self.day];
-
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    return [documentsDirectory stringByAppendingPathComponent:name];
-}
+//
+//-(void)removeHour:(HourObject *)item{
+//    [_hours removeObject:item];
+//    [self saveFavorites];
+//}
+//
+//-(void)addHour:(HourObject *)item{
+//    [_hours insertObject:item atIndex:0];
+//    [self saveFavorites];
+//}
 
 
--(void)saveFavorites{
-    NSString *filePath = [self dataFilePath];
-    
-    NSMutableData *data = [[NSMutableData alloc] init];
-    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc]
-                                 initForWritingWithMutableData:data];
-    [archiver encodeObject:self.hours forKey:kLinesKey];
-    [archiver finishEncoding];
-    [data writeToFile:filePath atomically:YES];
-}
+//- (NSString *)dataFilePath
+//{
+//    NSString *name = [NSString stringWithFormat:@"%@.archive",self.day];
+//
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentsDirectory = [paths objectAtIndex:0];
+//    return [documentsDirectory stringByAppendingPathComponent:name];
+//}
+//
+//
+//-(void)saveFavorites{
+//    NSString *filePath = [self dataFilePath];
+//    
+//    NSMutableData *data = [[NSMutableData alloc] init];
+//    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc]
+//                                 initForWritingWithMutableData:data];
+//    [archiver encodeObject:self.hours forKey:kHoursKey];
+//    [archiver finishEncoding];
+//    [data writeToFile:filePath atomically:YES];
+//}
 
 @end

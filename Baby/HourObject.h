@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface HourObject : NSObject
+@interface HourObject : NSObject  <NSCopying,NSCoding>
+
+@property(strong,nonatomic)NSString *hour;
 
 @property(strong,nonatomic)NSString *type;
 @property(strong,nonatomic)NSString *content;

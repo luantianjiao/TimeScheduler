@@ -25,7 +25,7 @@
 @implementation ContentViewController
 
 
--(void)setDetailItem:(NSString *)newDetailItem{
+-(void)setDetailItem:(HourObject *)newDetailItem{
     if (_detailItem != newDetailItem) {
         _detailItem = newDetailItem;
     }
@@ -39,14 +39,13 @@
     [self configureView];
     
 //    self.title = self.detailItem;
-    self.navigationItem.title = self.detailItem;
+    self.navigationItem.title = self.detailItem.hour;
 }
 
 -(void)configureView{
     
     //top left bottom right
 //    UIEdgeInsets padding = UIEdgeInsetsMake(10, 10, 10, 10);
-
     
     [self.textField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.view.mas_top).with.offset(80);
@@ -79,8 +78,11 @@
 //        make.width.mas_equalTo(self.view.frame.size.width - 150.0);
     }];
 
-    
-    
+    if (self.detailItem) {
+        self.textField.text = self.detailItem.type;
+        self.contentField.text = self.detailItem.content;
+        self.switchBar.on = self.detailItem.isDone;
+    }
 }
 
 - (UIPickerView *)selectPicker{
@@ -135,11 +137,11 @@
     return _contentField;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+-(void)viewWillDisappear:(BOOL)animated{
+    self.detailItem.type = self.textField.text;
+    self.detailItem.content = self.contentField.text;
+    self.detailItem.isDone = self.switchBar.on;
 }
-
 
 #pragma mark - UIPickerView
 
@@ -167,6 +169,7 @@
     self.textField.text = [self.pickerArray objectAtIndex:row];
     
     [self.textField resignFirstResponder];
+    [self.contentField resignFirstResponder];
     
     if (self.selectPicker) {
         [self.selectPicker removeFromSuperview];
@@ -194,9 +197,6 @@
             //此处将Y坐标设在最底下，为了一会动画的展示
             self.selectPicker.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 216);
             
-            _textField.text = @"Running";
-            
-            
             [self.view addSubview:self.selectPicker];
             
             [self.selectPicker mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -206,6 +206,9 @@
                 make.width.mas_equalTo(self.view.frame.size.width - 20.0);
             }];
             
+            NSInteger index = [self.pickerArray indexOfObject:self.textField.text];
+            [self.selectPicker selectRow:index inComponent:0 animated:NO];
+
             
             [UIView beginAnimations:nil context:nil];
             [UIView setAnimationDuration:0.3f];

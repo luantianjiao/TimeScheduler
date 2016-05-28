@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HourObject.h"
 
 @interface ContentViewController : UIViewController <UIPickerViewDelegate,UITextFieldDelegate,UIPickerViewDataSource>
 
-@property(strong,nonatomic)NSString *detailItem;
+@property(strong,nonatomic)HourObject *detailItem;
 
 @end

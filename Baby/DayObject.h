@@ -12,9 +12,9 @@
 @interface DayObject : NSObject <NSCopying,NSCoding>
 
 -(NSArray *)hours;
--(void)addHour:(HourObject *)item;
--(void)removeHour:(HourObject *)item;
+//-(void)addHour:(HourObject *)item;
+//-(void)removeHour:(HourObject *)item;
 
-@property(assign,nonatomic)NSString *day;
+@property(strong,nonatomic)NSString *day;
 
 @end
