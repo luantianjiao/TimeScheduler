@@ -40,6 +40,7 @@ static NSString * const kRootKey = @"kRootKey";
 
     
     self.title = self.detailItem.day;
+//    self.navigationItem.title = self.detailItem.day;
     
     //get achive
     NSString *filePath = [self dataFilePath];
@@ -56,6 +57,7 @@ static NSString * const kRootKey = @"kRootKey";
         [unarchiver finishDecoding];
     }
     
+
     
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 

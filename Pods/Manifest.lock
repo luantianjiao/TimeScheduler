@@ -1,10 +1,13 @@
 PODS:
+  - DateTools (1.7.0)
   - Masonry (0.6.4)
 
 DEPENDENCIES:
+  - DateTools
   - Masonry (~> 0.6.4)
 
 SPEC CHECKSUMS:
+  DateTools: 53288ee8b905fdc75897a1e6b5cc0144b14cba60
   Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
 
 COCOAPODS: 0.39.0
