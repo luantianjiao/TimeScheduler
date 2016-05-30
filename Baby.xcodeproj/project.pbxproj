@@ -21,6 +21,7 @@
 		0F57473E1CF2909C00FE51B3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0F57473C1CF2909C00FE51B3 /* LaunchScreen.storyboard */; };
 		0F5747491CF2909C00FE51B3 /* BabyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F5747481CF2909C00FE51B3 /* BabyTests.m */; };
 		0F5747541CF2909C00FE51B3 /* BabyUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F5747531CF2909C00FE51B3 /* BabyUITests.m */; };
+		0FFC72F71CFBE02C00FD4E73 /* KxMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FFC72F61CFBE02C00FD4E73 /* KxMenu.m */; };
 		17A99545E86393A579282094 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CCAA88FD96572C0C4DA0D11 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +71,8 @@
 		0F57474F1CF2909C00FE51B3 /* BabyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BabyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F5747531CF2909C00FE51B3 /* BabyUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BabyUITests.m; sourceTree = "<group>"; };
 		0F5747551CF2909C00FE51B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0FFC72F51CFBE02C00FD4E73 /* KxMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KxMenu.h; sourceTree = "<group>"; };
+		0FFC72F61CFBE02C00FD4E73 /* KxMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KxMenu.m; sourceTree = "<group>"; };
 		6CCAA88FD96572C0C4DA0D11 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0EED2E1D91784034CA22EC0 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -136,6 +139,7 @@
 		0F57472A1CF2909B00FE51B3 /* Baby */ = {
 			isa = PBXGroup;
 			children = (
+				0FFC72F81CFBE03300FD4E73 /* frameworks */,
 				0F40CAAD1CFB0DE4005BECCE /* DayMasterViewController.h */,
 				0F40CAAE1CFB0DE4005BECCE /* DayMasterViewController.m */,
 				0F40CAB01CFB0DEE005BECCE /* MasterViewController.h */,
@@ -181,6 +185,15 @@
 				0F5747551CF2909C00FE51B3 /* Info.plist */,
 			);
 			path = BabyUITests;
+			sourceTree = "<group>";
+		};
+		0FFC72F81CFBE03300FD4E73 /* frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0FFC72F51CFBE02C00FD4E73 /* KxMenu.h */,
+				0FFC72F61CFBE02C00FD4E73 /* KxMenu.m */,
+			);
+			name = frameworks;
 			sourceTree = "<group>";
 		};
 		5BC7642415B42632B87A1403 /* Pods */ = {
@@ -389,6 +402,7 @@
 				0F5747301CF2909B00FE51B3 /* AppDelegate.m in Sources */,
 				0F40CAB81CFB0F92005BECCE /* DayObject.m in Sources */,
 				0F57472D1CF2909B00FE51B3 /* main.m in Sources */,
+				0FFC72F71CFBE02C00FD4E73 /* KxMenu.m in Sources */,
 				0F40CABE1CFB0FD3005BECCE /* ContentViewController.m in Sources */,
 				0F40CABD1CFB0FD3005BECCE /* CashViewController.m in Sources */,
 				0F40CAAF1CFB0DE4005BECCE /* DayMasterViewController.m in Sources */,

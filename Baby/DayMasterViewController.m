@@ -10,6 +10,7 @@
 #import "ContentViewController.h"
 #import "HourObject.h"
 #import "CashViewController.h"
+#import "KxMenu.h"
 
 static NSString * const kRootKey = @"kRootKey";
 
@@ -18,6 +19,7 @@ static NSString * const kRootKey = @"kRootKey";
 @property(strong,nonatomic)NSMutableArray *objects;
 @property(strong,nonatomic)NSArray *constObjects;
 @property(assign,nonatomic)NSInteger index;
+@property(strong,nonatomic)NSMutableArray *toAddObjects;
 
 @end
 
@@ -58,11 +60,26 @@ static NSString * const kRootKey = @"kRootKey";
         [unarchiver finishDecoding];
     }
     
-
+    if (!self.toAddObjects) {
+        self.toAddObjects = [[NSMutableArray alloc]initWithArray:self.constObjects];
+    }else{
+        [self.toAddObjects removeAllObjects];
+        [self.toAddObjects addObjectsFromArray:self.constObjects];
+    }
+    
+    if ([self.objects count]>0) {
+        for (HourObject *hour in self.objects) {
+            NSString *timePeriod = hour.hour;
+            if([self.toAddObjects containsObject:timePeriod]){
+                [self.toAddObjects removeObject:timePeriod];
+            }
+        }
+    }
     
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
+//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(showMenu:)];
     self.navigationItem.rightBarButtonItem = addButton;
     
     self.contentViewController = (ContentViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
@@ -114,6 +131,35 @@ static NSString * const kRootKey = @"kRootKey";
     NSString *documentsDirectory = [paths objectAtIndex:0];
     return [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.archive",
                                                                self.detailItem.day]];
+}
+
+- (void) pushMenuItem:(KxMenuItem*)sender
+{
+    NSLog(@"%@", sender.title);
+}
+
+- (void)showMenu:(UIButton *)sender
+{
+    NSMutableArray *menuItems = [[NSMutableArray alloc]init];
+    for (NSString *menuString in self.toAddObjects) {
+        KxMenuItem *menuItem = [KxMenuItem menuItem:menuString
+                       image:nil
+                      target:nil
+                    action:@selector(pushMenuItem:)];
+        
+        [menuItems addObject:menuItem];
+    }
+    
+    KxMenuItem *first = menuItems[0];
+    first.foreColor = [UIColor colorWithRed:47/255.0f green:112/255.0f blue:225/255.0f alpha:1.0];
+    first.alignment = NSTextAlignmentCenter;
+    
+    const CGFloat W = self.view.bounds.size.width;
+    const CGFloat H = self.view.bounds.size.height;
+    
+    [KxMenu showMenuInView:self.view
+                  fromRect:CGRectMake(5, H - 55, 100, 50)
+                 menuItems:menuItems];
 }
 
 - (void)insertNewObject:(id)sender {
