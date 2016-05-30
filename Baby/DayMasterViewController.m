@@ -133,10 +133,7 @@ static NSString * const kRootKey = @"kRootKey";
                                                                self.detailItem.day]];
 }
 
-- (void) pushMenuItem:(KxMenuItem*)sender
-{
-    NSLog(@"%@", sender.title);
-}
+
 
 - (void)showMenu:(UIButton *)sender
 {
@@ -144,7 +141,7 @@ static NSString * const kRootKey = @"kRootKey";
     for (NSString *menuString in self.toAddObjects) {
         KxMenuItem *menuItem = [KxMenuItem menuItem:menuString
                        image:nil
-                      target:nil
+                      target:self
                     action:@selector(pushMenuItem:)];
         
         [menuItems addObject:menuItem];
@@ -158,30 +155,29 @@ static NSString * const kRootKey = @"kRootKey";
     const CGFloat H = self.view.bounds.size.height;
     
     [KxMenu showMenuInView:self.view
-                  fromRect:CGRectMake(5, H - 55, 100, 50)
+                  fromRect:CGRectMake(W - 105, 15, 100, 50)
                  menuItems:menuItems];
 }
 
-- (void)insertNewObject:(id)sender {
+- (void) pushMenuItem:(KxMenuItem*)sender
+{
     if (!self.objects) {
         self.objects = [[NSMutableArray alloc] init];
     }
     
-//    [self.objects insertObject:self.constObjects[self.index] atIndex:self.index];
+    //    [self.objects insertObject:self.constObjects[self.index] atIndex:self.index];
     
     HourObject *hour = [[HourObject alloc]init];
-    [hour setHour:self.constObjects[self.index]];
+    [hour setHour:sender.title];
     [hour setType:@"Running"];
     [hour setIsDone:NO];
     [hour setContent:@"It is a beautiful day."];
     
     [self.objects insertObject:hour atIndex:self.index];
+    [self.toAddObjects removeObject:sender.title];
     
     self.index += 1;
     
-    
-//    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-//    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     [self.tableView reloadData];
 }
 
