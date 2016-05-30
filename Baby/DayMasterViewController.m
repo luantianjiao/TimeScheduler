@@ -9,6 +9,7 @@
 #import "DayMasterViewController.h"
 #import "ContentViewController.h"
 #import "HourObject.h"
+#import "CashViewController.h"
 
 static NSString * const kRootKey = @"kRootKey";
 
@@ -65,9 +66,31 @@ static NSString * const kRootKey = @"kRootKey";
     self.navigationItem.rightBarButtonItem = addButton;
     
     self.contentViewController = (ContentViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    
+    //swipe
+    for (NSUInteger touchCount = 1; touchCount <= 5; touchCount++) {
+        UISwipeGestureRecognizer *horizontal;
+        horizontal = [[UISwipeGestureRecognizer alloc]
+                      initWithTarget:self action:@selector(reportHorizontalSwipe)];
+        horizontal.direction = UISwipeGestureRecognizerDirectionLeft |
+        UISwipeGestureRecognizerDirectionRight;
+        horizontal.numberOfTouchesRequired = touchCount;
+        [self.view addGestureRecognizer:horizontal];
+    }
+
 }
 
+-(void)reportHorizontalSwipe{
+    CashViewController *cashController = [[CashViewController alloc]init];
+    [cashController setDetailItem:self.detailItem];
+    [self presentViewController:cashController animated:YES completion:nil];
+}
+
+
 -(void)viewWillDisappear:(BOOL)animated{
+    
+    NSLog(@"day master view controller disappear");
+
     [super viewWillDisappear:animated];
     NSString *filePath = [self dataFilePath];
     
@@ -83,11 +106,6 @@ static NSString * const kRootKey = @"kRootKey";
 - (void)viewWillAppear:(BOOL)animated {
     self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
     [super viewWillAppear:animated];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (NSString *)dataFilePath

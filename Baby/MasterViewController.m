@@ -50,7 +50,7 @@
 //    NSInteger daysInMonth = date.daysInMonth + 1;
     for (NSInteger i = 0; i < date.daysInMonth; i++) {
         if (week == date.weekOfMonth) {
-            NSLog(@"%@", [date formattedDateWithStyle:NSDateFormatterMediumStyle]);
+//            NSLog(@"%@", [date formattedDateWithStyle:NSDateFormatterMediumStyle]);
             [resultDateArr addObject:date];
         }
         date = [date dateByAddingDays:1];
