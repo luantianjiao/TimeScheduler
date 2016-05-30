@@ -21,6 +21,8 @@ static NSString * const kRootKey = @"kRootKey";
 @property(assign,nonatomic)NSInteger index;
 @property(strong,nonatomic)NSMutableArray *toAddObjects;
 
+@property(strong,nonatomic)NSArray *temparray;
+
 @end
 
 @implementation DayMasterViewController
@@ -177,6 +179,32 @@ static NSString * const kRootKey = @"kRootKey";
     [self.toAddObjects removeObject:sender.title];
     
     self.index += 1;
+    
+    NSArray *tempArray = [[NSArray alloc]initWithArray:self.objects];
+    
+    tempArray = [(NSArray *)self.objects sortedArrayUsingComparator:^(id obj1, id obj2){
+        HourObject *hour1 = (HourObject *)obj1;
+        NSString *hour1String = hour1.hour;
+        NSArray *firstSplitArray = [hour1String componentsSeparatedByString:@":"];
+        hour1String = [firstSplitArray firstObject];
+        
+        HourObject *hour2 = (HourObject *)obj2;
+        NSString *hour2String = hour2.hour;
+        NSArray *secondSplitArray = [hour2String componentsSeparatedByString:@":"];
+        hour2String = [secondSplitArray firstObject];
+
+        if ([hour1String integerValue] > [hour2String integerValue]) {
+            return (NSComparisonResult)NSOrderedDescending;
+        }
+        
+        if ([hour1String integerValue] < [hour2String integerValue]) {
+            return (NSComparisonResult)NSOrderedAscending;
+        }
+        return (NSComparisonResult)NSOrderedSame;
+    }];
+    
+    [self.objects removeAllObjects];
+    [self.objects addObjectsFromArray:tempArray];
     
     [self.tableView reloadData];
 }

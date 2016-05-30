@@ -27,6 +27,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.title = @"Week";
+    
 //    self.objects = @[@"Sunday", @"Monday", @"Tuesday", @"Wenesday", @"Thursday", @"Friday", @"Saturday"];
     self.weekdays = [NSArray arrayWithObjects: [NSNull null], @"星期天", @"星期一", @"星期二", @"星期三", @"星期四", @"星期五", @"星期六", nil];
     
@@ -104,7 +106,7 @@
     NSDate *object = self.objects[indexPath.row];
     
     cell.textLabel.text = self.weekdays[object.weekday];
-    cell.detailTextLabel.text = [object formattedDateWithFormat:@"dd MMM, yyyy"];
+    cell.detailTextLabel.text = [object formattedDateWithFormat:@"yyyy-MM-dd"];
 
     
     if ((indexPath.row + 1) == self.today) {
