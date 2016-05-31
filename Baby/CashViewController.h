@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "DayObject.h"
 
-@interface CashViewController : UIViewController
+@interface CashViewController : UITableViewController
 
 @property (strong, nonatomic) DayObject *detailItem;
 

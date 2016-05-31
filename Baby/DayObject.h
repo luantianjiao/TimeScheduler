@@ -14,6 +14,7 @@
 -(NSArray *)hours;
 //-(void)addHour:(HourObject *)item;
 //-(void)removeHour:(HourObject *)item;
+-(NSArray *)moneyArray;
 
 @property(strong,nonatomic)NSString *day;
 

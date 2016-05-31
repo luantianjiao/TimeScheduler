@@ -102,7 +102,10 @@ static NSString * const kRootKey = @"kRootKey";
 -(void)reportHorizontalSwipe{
     CashViewController *cashController = [[CashViewController alloc]init];
     [cashController setDetailItem:self.detailItem];
-    [self presentViewController:cashController animated:YES completion:nil];
+
+    UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:cashController];
+    
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 
@@ -140,6 +143,15 @@ static NSString * const kRootKey = @"kRootKey";
 - (void)showMenu:(UIButton *)sender
 {
     NSMutableArray *menuItems = [[NSMutableArray alloc]init];
+    
+    KxMenuItem *menuItem = [KxMenuItem menuItem:@"时间段"
+                                          image:nil
+                                         target:nil
+                                         action:nil];
+    
+    [menuItems addObject:menuItem];
+
+    
     for (NSString *menuString in self.toAddObjects) {
         KxMenuItem *menuItem = [KxMenuItem menuItem:menuString
                        image:nil
