@@ -8,6 +8,8 @@
 
 #import "CashViewController.h"
 #import "Masonry.h"
+#import <STPopup/STPopup.h>
+#import "CashPopUpViewController.h"
 
 @interface CashViewController ()
 
@@ -54,6 +56,12 @@
 
 -(void)insertNewObject:(UIButton *)button{
     
+    CashPopUpViewController *cashPopUpVC = [[CashPopUpViewController alloc]init];
+    [cashPopUpVC setDetailItem:self.detailItem];
+    
+    STPopupController *popupController = [[STPopupController alloc] initWithRootViewController:cashPopUpVC];
+    popupController.containerView.layer.cornerRadius = 4;
+    [popupController presentInViewController:self];
 }
 
 -(void)reportHorizontalSwipe{

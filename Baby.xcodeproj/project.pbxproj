@@ -15,6 +15,7 @@
 		0F40CABD1CFB0FD3005BECCE /* CashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F40CABA1CFB0FD3005BECCE /* CashViewController.m */; };
 		0F40CABE1CFB0FD3005BECCE /* ContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F40CABC1CFB0FD3005BECCE /* ContentViewController.m */; };
 		0F5542871CFD2F5000E07865 /* CashItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F5542861CFD2F5000E07865 /* CashItem.m */; };
+		0F55428C1CFD5D0500E07865 /* CashPopUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F55428B1CFD5D0500E07865 /* CashPopUpViewController.m */; };
 		0F57472D1CF2909B00FE51B3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F57472C1CF2909B00FE51B3 /* main.m */; };
 		0F5747301CF2909B00FE51B3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F57472F1CF2909B00FE51B3 /* AppDelegate.m */; };
 		0F5747391CF2909C00FE51B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0F5747371CF2909C00FE51B3 /* Main.storyboard */; };
@@ -60,6 +61,8 @@
 		0F40CABC1CFB0FD3005BECCE /* ContentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentViewController.m; sourceTree = "<group>"; };
 		0F5542851CFD2F5000E07865 /* CashItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CashItem.h; sourceTree = "<group>"; };
 		0F5542861CFD2F5000E07865 /* CashItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CashItem.m; sourceTree = "<group>"; };
+		0F55428A1CFD5D0500E07865 /* CashPopUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CashPopUpViewController.h; sourceTree = "<group>"; };
+		0F55428B1CFD5D0500E07865 /* CashPopUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CashPopUpViewController.m; sourceTree = "<group>"; };
 		0F5747281CF2909B00FE51B3 /* Baby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Baby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F57472C1CF2909B00FE51B3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		0F57472E1CF2909B00FE51B3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -144,15 +147,17 @@
 		0F57472A1CF2909B00FE51B3 /* Baby */ = {
 			isa = PBXGroup;
 			children = (
+				0F40CAB01CFB0DEE005BECCE /* MasterViewController.h */,
+				0F40CAB11CFB0DEE005BECCE /* MasterViewController.m */,
 				0FFC72F81CFBE03300FD4E73 /* frameworks */,
 				0F40CAAD1CFB0DE4005BECCE /* DayMasterViewController.h */,
 				0F40CAAE1CFB0DE4005BECCE /* DayMasterViewController.m */,
-				0F40CAB01CFB0DEE005BECCE /* MasterViewController.h */,
-				0F40CAB11CFB0DEE005BECCE /* MasterViewController.m */,
-				0F40CAB91CFB0FD3005BECCE /* CashViewController.h */,
-				0F40CABA1CFB0FD3005BECCE /* CashViewController.m */,
 				0F40CABB1CFB0FD3005BECCE /* ContentViewController.h */,
 				0F40CABC1CFB0FD3005BECCE /* ContentViewController.m */,
+				0F40CAB91CFB0FD3005BECCE /* CashViewController.h */,
+				0F40CABA1CFB0FD3005BECCE /* CashViewController.m */,
+				0F55428A1CFD5D0500E07865 /* CashPopUpViewController.h */,
+				0F55428B1CFD5D0500E07865 /* CashPopUpViewController.m */,
 				0F25C36B1CF6C250006FBB58 /* dataModel */,
 				0F57472E1CF2909B00FE51B3 /* AppDelegate.h */,
 				0F57472F1CF2909B00FE51B3 /* AppDelegate.m */,
@@ -407,6 +412,7 @@
 				0F5747301CF2909B00FE51B3 /* AppDelegate.m in Sources */,
 				0F40CAB81CFB0F92005BECCE /* DayObject.m in Sources */,
 				0F57472D1CF2909B00FE51B3 /* main.m in Sources */,
+				0F55428C1CFD5D0500E07865 /* CashPopUpViewController.m in Sources */,
 				0FFC72F71CFBE02C00FD4E73 /* KxMenu.m in Sources */,
 				0F40CABE1CFB0FD3005BECCE /* ContentViewController.m in Sources */,
 				0F40CABD1CFB0FD3005BECCE /* CashViewController.m in Sources */,
