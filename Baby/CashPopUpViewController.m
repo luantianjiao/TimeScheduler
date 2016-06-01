@@ -73,22 +73,42 @@
 
 -(void)configureView{
     [self.contentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        
+        make.top.mas_equalTo(self.view).with.offset(50);
+        make.left.mas_equalTo(self.view).with.offset(30);
+        make.width.mas_equalTo(80);
+        make.height.mas_equalTo(50);
     }];
+    [self.contentField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.view).with.offset(50);
+        make.left.mas_equalTo(self.contentLabel.mas_right).with.offset(20);
+        make.width.mas_equalTo(80);
+        make.height.mas_equalTo(50);
+    }];
+    
+    [self.cashLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.contentLabel.mas_top).with.offset(50);
+        make.left.mas_equalTo(self.view).with.offset(30);
+        make.width.mas_equalTo(80);
+        make.height.mas_equalTo(50);
+    }];
+    [self.cashField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.contentLabel.mas_top).with.offset(50);
+        make.left.mas_equalTo(self.cashLabel.mas_right).with.offset(20);
+        make.width.mas_equalTo(80);
+        make.height.mas_equalTo(50);
+    }];
+    
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self configureView];
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
     
-    //    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStylePlain target:self action:nil];
-    
-//    NSLog(@"%@",_detailItem.day);
-    
-//    _label = [UILabel new];
-//    _label.numberOfLines = 0;
-//    _label.text = @"Apple Inc. (commonly known as Apple) is an American multinational technology company headquartered in Cupertino, California, that designs, develops, and sells consumer electronics, computer software, and online services. Its best-known hardware products are the Mac personal computers, the iPod portable media player, the iPhone smartphone, the iPad tablet computer, and the Apple Watch smartwatch. Apple's consumer software includes the OS X and iOS operating systems, the iTunes media player, the Safari web browser, and the iLife and iWork creativity and productivity suites. Its online services include the iTunes Store, the iOS App Store and Mac App Store, and iCloud.";
-//    [self.view addSubview:_label];
 }
 
 
