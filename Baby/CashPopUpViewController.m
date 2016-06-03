@@ -9,6 +9,8 @@
 #import "CashPopUpViewController.h"
 #import <STPopup/STPopup.h>
 #import "Masonry.h"
+#import "CashItem.h"
+
 
 
 @interface CashPopUpViewController ()
@@ -19,10 +21,18 @@
 @property(strong,nonatomic) UILabel *cashLabel;
 @property(strong,nonatomic) UITextField *cashField;
 
+//@property(copy,nonatomic) NSMutableArray *objects;
+
+
 @end
 
 @implementation CashPopUpViewController
 
+-(void)setObjects:(NSMutableArray *)objects{
+    if (_objects != objects) {
+        _objects = objects;
+    }
+}
 
 - (instancetype)init
 {
@@ -109,6 +119,12 @@
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     
+    CashItem *cashItem = [[CashItem alloc]init];
+    cashItem.itemString = self.contentField.text;
+    cashItem.cost = [self.cashField.text floatValue];
+    
+    //    self.detailItem.moneyArray arrayByAddingObjectsFromArray:
+    [self.objects insertObject:cashItem atIndex:0];
 }
 
 

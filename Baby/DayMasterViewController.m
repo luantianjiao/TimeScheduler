@@ -47,21 +47,6 @@ static NSString * const kRootKey = @"kRootKey";
     self.title = self.detailItem.day;
 //    self.navigationItem.title = self.detailItem.day;
     
-    //get achive
-    NSString *filePath = [self dataFilePath];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-        if (!self.objects) {
-            self.objects = [[NSMutableArray alloc] init];
-        }
-
-        NSData *data = [[NSMutableData alloc]
-                        initWithContentsOfFile:filePath];
-        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc]
-                                         initForReadingWithData:data];
-        self.objects = [unarchiver decodeObjectForKey:kRootKey];
-        [unarchiver finishDecoding];
-    }
-    
     if (!self.toAddObjects) {
         self.toAddObjects = [[NSMutableArray alloc]initWithArray:self.constObjects];
     }else{
@@ -128,6 +113,21 @@ static NSString * const kRootKey = @"kRootKey";
 - (void)viewWillAppear:(BOOL)animated {
     self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
     [super viewWillAppear:animated];
+    
+    //get achive
+    NSString *filePath = [self dataFilePath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        if (!self.objects) {
+            self.objects = [[NSMutableArray alloc] init];
+        }
+        
+        NSData *data = [[NSMutableData alloc]
+                        initWithContentsOfFile:filePath];
+        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc]
+                                         initForReadingWithData:data];
+        self.objects = [unarchiver decodeObjectForKey:kRootKey];
+        [unarchiver finishDecoding];
+    }
 }
 
 - (NSString *)dataFilePath

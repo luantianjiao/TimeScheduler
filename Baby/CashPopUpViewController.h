@@ -11,6 +11,6 @@
 
 @interface CashPopUpViewController : UIViewController
 
-@property (strong, nonatomic) DayObject *detailItem;
+@property(strong,nonatomic)NSMutableArray *objects;
 
 @end

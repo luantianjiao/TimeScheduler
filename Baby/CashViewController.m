@@ -10,6 +10,9 @@
 #import "Masonry.h"
 #import <STPopup/STPopup.h>
 #import "CashPopUpViewController.h"
+#import "CashItem.h"
+
+static NSString * const kCashKey = @"kCashKey";
 
 @interface CashViewController ()
 
@@ -57,16 +60,60 @@
 -(void)insertNewObject:(UIButton *)button{
     
     CashPopUpViewController *cashPopUpVC = [[CashPopUpViewController alloc]init];
-    [cashPopUpVC setDetailItem:self.detailItem];
+    cashPopUpVC.objects = self.objects;
     
     STPopupController *popupController = [[STPopupController alloc] initWithRootViewController:cashPopUpVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
+    
+    [self.tableView reloadData];
 }
 
 -(void)reportHorizontalSwipe{
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+
+- (NSString *)dataFilePath
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    return [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.archive",
+                                                               self.detailItem.day]];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    NSString *filePath = [self dataFilePath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        if (!self.objects) {
+            self.objects = [[NSMutableArray alloc] init];
+        }
+        
+        NSData *data = [[NSMutableData alloc]
+                        initWithContentsOfFile:filePath];
+        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc]
+                                         initForReadingWithData:data];
+        self.objects = [unarchiver decodeObjectForKey:kCashKey];
+        [unarchiver finishDecoding];
+    }
+    
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+        
+    NSString *filePath = [self dataFilePath];
+    
+    NSMutableData *data = [[NSMutableData alloc] init];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc]
+                                 initForWritingWithMutableData:data];
+    [archiver encodeObject:self.objects forKey:kCashKey];
+    [archiver finishEncoding];
+    [data writeToFile:filePath atomically:YES];
+    
+}
+
 
 
 #pragma mark - Table View
@@ -82,8 +129,10 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DetailCell" forIndexPath:indexPath];
-    HourObject *hour = (HourObject *)self.objects[indexPath.row];
-    NSString *object = hour.hour;
+    
+    
+    CashItem *cash = (CashItem *)self.objects[indexPath.row];
+    NSString *object = cash.itemString;
     cell.textLabel.text = [object description];
     return cell;
 }
