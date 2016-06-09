@@ -41,14 +41,6 @@ FMDatabase *dataBase;
     NSLog(@"day master view controller");
     // Do any additional setup after loading the view, typically from a nib.
     
-        
-    //end of database
-
-    
-    self.index = 0;
-    self.constObjects = @[@"7:00-8:00",@"8:00-9:00",@"9:00-10:00",@"10:00-11:00",@"11:00-12:00",@"12:00-13:00",@"13:00-14:00",@"14:00-15:00",@"15:00-16:00",@"16:00-17:00",@"17:00-18:00",@"18:00-19:00",@"19:00-20:00",@"20:00-21:00",@"21:00-22:00"];
-    
-    
     //get dayString throught dayId
     //database
     NSString *dbPath = [self dataFilePath];
@@ -57,7 +49,7 @@ FMDatabase *dataBase;
         NSLog(@"Could not open db.");
         return ;
     }
-
+    
     NSString * sql=[NSString stringWithFormat:@"select * from day where id = %ld",self.dayId];
     FMResultSet *result=[dataBase executeQuery:sql];
     NSString * name;
@@ -67,22 +59,14 @@ FMDatabase *dataBase;
     }
     
     self.title = name;
+
+    //end of database
+
     
-    if (!self.toAddObjects) {
-        self.toAddObjects = [[NSMutableArray alloc]initWithArray:self.constObjects];
-    }else{
-        [self.toAddObjects removeAllObjects];
-        [self.toAddObjects addObjectsFromArray:self.constObjects];
-    }
+    self.index = 0;
+    self.constObjects = @[@"7:00-8:00",@"8:00-9:00",@"9:00-10:00",@"10:00-11:00",@"11:00-12:00",@"12:00-13:00",@"13:00-14:00",@"14:00-15:00",@"15:00-16:00",@"16:00-17:00",@"17:00-18:00",@"18:00-19:00",@"19:00-20:00",@"20:00-21:00",@"21:00-22:00"];
     
-    if ([self.objects count]>0) {
-        for (NSString *hour in self.objects) {
-            if([self.toAddObjects containsObject:hour]){
-                [self.toAddObjects removeObject:hour];
-            }
-        }
-    }
-    
+
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(showMenu:)];
@@ -122,13 +106,30 @@ FMDatabase *dataBase;
         self.objects = [[NSMutableArray alloc] init];
     }
     
-    NSString * sql=[NSString stringWithFormat:@"select * from hourItem where dayId = %ld",(long)self.dayId];
-    FMResultSet *result=[dataBase executeQuery:sql];
+    
+    NSString * objectSQL=[NSString stringWithFormat:@"select * from hourItem where dayId = %ld",(long)self.dayId];
+    FMResultSet *result=[dataBase executeQuery:objectSQL];
     while(result.next){
         NSString *hourString =[result stringForColumn:@"hour"];
         [self.objects addObject:hourString];
     }
- }
+
+    
+    if (!self.toAddObjects) {
+        self.toAddObjects = [[NSMutableArray alloc]initWithArray:self.constObjects];
+    }else{
+        [self.toAddObjects removeAllObjects];
+        [self.toAddObjects addObjectsFromArray:self.constObjects];
+    }
+    
+    if ([self.objects count]>0) {
+        for (NSString *hour in self.objects) {
+            if([self.toAddObjects containsObject:hour]){
+                [self.toAddObjects removeObject:hour];
+            }
+        }
+    }
+}
 
 - (NSString *)dataFilePath
 {
