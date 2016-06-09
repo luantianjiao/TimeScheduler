@@ -11,6 +11,6 @@
 
 @interface ContentViewController : UIViewController <UIPickerViewDelegate,UITextFieldDelegate,UIPickerViewDataSource>
 
-@property(strong,nonatomic)HourObject *detailItem;
+@property(assign,nonatomic)NSInteger detailItem;
 
 @end

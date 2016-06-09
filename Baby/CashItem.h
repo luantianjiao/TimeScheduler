@@ -8,8 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface CashItem : NSObject <NSCopying,NSCoding>
+@interface CashItem : NSObject
 
+@property(assign,nonatomic)int cashId;
 @property(strong,nonatomic)NSString *itemString;
 @property(assign,nonatomic)float cost;
 

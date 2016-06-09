@@ -11,6 +11,6 @@
 
 @interface CashPopUpViewController : UIViewController
 
-@property(strong,nonatomic)NSMutableArray *objects;
+@property(assign,nonatomic)NSInteger cashId;
 
 @end

@@ -10,6 +10,7 @@
 #import <STPopup/STPopup.h>
 #import "Masonry.h"
 #import "CashItem.h"
+#import <FMDB.h>
 
 
 
@@ -28,10 +29,20 @@
 
 @implementation CashPopUpViewController
 
--(void)setObjects:(NSMutableArray *)objects{
-    if (_objects != objects) {
-        _objects = objects;
+FMDatabase *cashItemdb;
+
+-(void)setCashId:(NSInteger)cashId{
+    if (_cashId != cashId) {
+        _cashId = cashId;
     }
+}
+
+- (NSString *)dataFilePath
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory = [paths objectAtIndex:0];
+    NSString *dbPath = [documentDirectory stringByAppendingPathComponent:@"MyDatabase.db"];
+    return dbPath;
 }
 
 - (instancetype)init
@@ -66,6 +77,7 @@
     if (!_contentField) {
         _contentField = [[UITextField  alloc]init];
         _contentField.placeholder = @"八宝粥";
+//        _contentField.text = @"八宝粥";
         [self.view addSubview:_contentField];
     }
     return _contentField;
@@ -76,6 +88,7 @@
         _cashField = [[UITextField alloc]init];
         _cashField.keyboardType = UIKeyboardTypeNumberPad;
         _cashField.placeholder = @"3.2";
+//        _cashField.text = @"3.2";
         [self.view addSubview:_cashField];
     }
     return _cashField;
@@ -114,20 +127,40 @@
 {
     [super viewDidLoad];
     [self configureView];
+    
+    NSString *dbPath = [self dataFilePath];
+    cashItemdb = [FMDatabase databaseWithPath:dbPath] ;
+    if (![cashItemdb open]) {
+        NSLog(@"Could not open db.");
+        return ;
+    }
+    
+    NSString *selectSQL = [NSString stringWithFormat: @"select * from cashItem where id = %ld",self.cashId];
+    FMResultSet *result=[cashItemdb executeQuery:selectSQL];
+    while(result.next){
+        self.contentField.text = [result stringForColumn:@"cashString"];
+        self.cashField.text = [NSString stringWithFormat:@"%f",[result doubleForColumn:@"cost"]];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     
-    CashItem *cashItem = [[CashItem alloc]init];
-    cashItem.itemString = self.contentField.text;
-    cashItem.cost = [self.cashField.text floatValue];
+    NSString *cashString = self.contentField.text;
+    NSString *cost = self.cashField.text;
     
-    //    self.detailItem.moneyArray arrayByAddingObjectsFromArray:
-    [self.objects insertObject:cashItem atIndex:0];
+    NSString * updateSQL=[NSString stringWithFormat:@"update 'cashItem' set 'cashString' = '%@', 'cost' = '%@' where id = %ld",cashString,cost,(long)self.cashId];
+    
+    BOOL res = [cashItemdb executeUpdate:updateSQL];
+    if (!res) {
+        NSLog(@"error when update db table");
+    } else {
+        NSLog(@"success to update db table");
+    }
+
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"RefreshTableNotification" object:nil];
+    
 }
-
-
 
 - (void)viewDidLayoutSubviews
 {

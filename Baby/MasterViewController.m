@@ -10,6 +10,7 @@
 #import "DayMasterViewController.h"
 #import "DayObject.h"
 #import "NSDate+DateTools.h"
+#import <FMDB/FMDB.h>
 
 
 @interface MasterViewController ()
@@ -29,10 +30,8 @@
     
     self.title = @"Week";
     
-//    self.objects = @[@"Sunday", @"Monday", @"Tuesday", @"Wenesday", @"Thursday", @"Friday", @"Saturday"];
     self.weekdays = [NSArray arrayWithObjects: [NSNull null], @"星期天", @"星期一", @"星期二", @"星期三", @"星期四", @"星期五", @"星期六", nil];
     
-//    NSDate *date = [[NSDate date]dateBySubtractingDays:60];
     NSDate *date = [NSDate date];
     self.today = date.weekday;
     
@@ -66,21 +65,60 @@
     [super viewWillAppear:animated];
 }
 
+- (NSString *)dataFilePath
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory = [paths objectAtIndex:0];
+    NSString *dbPath = [documentDirectory stringByAppendingPathComponent:@"MyDatabase.db"];
+    return dbPath;
+}
+
 #pragma mark - Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         NSDate *object = (NSDate *)self.objects[indexPath.row];
-        
-        DayObject *day = [[DayObject alloc]init];
-        [day setDay:[object formattedDateWithStyle:NSDateFormatterMediumStyle]];
-        
-//        DayMasterViewController *controller = (DayMasterViewController *)[[[[[[segue destinationViewController] topViewController] childViewControllers] objectAtIndex:0] childViewControllers] objectAtIndex:0];
+        NSString *day = [object formattedDateWithFormat:@"yyyyMMdd"];
         DayMasterViewController *controller = (DayMasterViewController *)[[segue destinationViewController] topViewController];
+        
+        
+        //database
+        NSString *dbPath = [self dataFilePath];
+        FMDatabase *dataBase = [FMDatabase databaseWithPath:dbPath] ;
+        if (![dataBase open]) {
+            NSLog(@"Could not open db.");
+            return ;
+        }
+        
+        
+        NSString * createDay = @"create table if not exists day(id integer primary key autoincrement,name varchar)";
+        BOOL c1= [dataBase executeUpdate:createDay];
+        if (c1) {
+            NSLog(@"创建表成功.");
+        }
+        
+        NSString * sql=[NSString stringWithFormat:@"select * from day where name = %@",day];
+        FMResultSet *result=[dataBase executeQuery:sql];
+        int ids = 0;
+        NSString * name;
+        
+        while(result.next){
+            ids=[result intForColumn:@"id"];
+            name =[result stringForColumn:@"name"];
+            NSLog(@"%@,%d",name,ids);
+        }
+        
+        if(ids == 0){
+            NSString * insertSqlDay=@"insert into day(name) values(?)";
+            bool inflag1=[dataBase executeUpdate:insertSqlDay,day];
+            if (inflag1) {
+                NSLog(@"Insert done");
+            }
+        }
 
-//        NSInteger object = indexPath.row;
-        [controller setDetailItem:day];
+        
+        [controller setDayId:ids];
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
     }

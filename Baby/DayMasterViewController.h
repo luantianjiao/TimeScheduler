@@ -12,8 +12,8 @@
 
 @interface DayMasterViewController : UITableViewController
 
-@property(strong,nonatomic)ContentViewController *contentViewController;
-@property (strong, nonatomic) DayObject *detailItem;
+@property(strong,nonatomic) ContentViewController *contentViewController;
+@property(assign, nonatomic) NSInteger dayId;
 
 @end
 

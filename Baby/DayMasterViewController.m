@@ -8,11 +8,10 @@
 
 #import "DayMasterViewController.h"
 #import "ContentViewController.h"
-#import "HourObject.h"
 #import "CashViewController.h"
 #import "KxMenu.h"
+#import <FMDB.h>
 
-static NSString * const kRootKey = @"kRootKey";
 
 @interface DayMasterViewController ()
 
@@ -23,29 +22,51 @@ static NSString * const kRootKey = @"kRootKey";
 
 @property(strong,nonatomic)NSArray *temparray;
 
+
 @end
 
 @implementation DayMasterViewController
 
--(void)setDetailItem:(DayObject *)newDetailItem{
-    if (_detailItem != newDetailItem) {
-        _detailItem = newDetailItem;
-//        [self.tableView reloadData];
+FMDatabase *dataBase;
+
+-(void)setDayId:(NSInteger)dayId{
+    if (_dayId != dayId) {
+        _dayId = dayId;
     }
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    NSLog(@"day master view controller");
     // Do any additional setup after loading the view, typically from a nib.
     
-    
+        
+    //end of database
+
     
     self.index = 0;
     self.constObjects = @[@"7:00-8:00",@"8:00-9:00",@"9:00-10:00",@"10:00-11:00",@"11:00-12:00",@"12:00-13:00",@"13:00-14:00",@"14:00-15:00",@"15:00-16:00",@"16:00-17:00",@"17:00-18:00",@"18:00-19:00",@"19:00-20:00",@"20:00-21:00",@"21:00-22:00"];
-
     
-    self.title = self.detailItem.day;
-//    self.navigationItem.title = self.detailItem.day;
+    
+    //get dayString throught dayId
+    //database
+    NSString *dbPath = [self dataFilePath];
+    dataBase = [FMDatabase databaseWithPath:dbPath] ;
+    if (![dataBase open]) {
+        NSLog(@"Could not open db.");
+        return ;
+    }
+
+    NSString * sql=[NSString stringWithFormat:@"select * from day where id = %ld",self.dayId];
+    FMResultSet *result=[dataBase executeQuery:sql];
+    NSString * name;
+    
+    while(result.next){
+        name =[result stringForColumn:@"name"];
+    }
+    
+    self.title = name;
     
     if (!self.toAddObjects) {
         self.toAddObjects = [[NSMutableArray alloc]initWithArray:self.constObjects];
@@ -55,17 +76,15 @@ static NSString * const kRootKey = @"kRootKey";
     }
     
     if ([self.objects count]>0) {
-        for (HourObject *hour in self.objects) {
-            NSString *timePeriod = hour.hour;
-            if([self.toAddObjects containsObject:timePeriod]){
-                [self.toAddObjects removeObject:timePeriod];
+        for (NSString *hour in self.objects) {
+            if([self.toAddObjects containsObject:hour]){
+                [self.toAddObjects removeObject:hour];
             }
         }
     }
     
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
-//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(showMenu:)];
     self.navigationItem.rightBarButtonItem = addButton;
     
@@ -86,7 +105,7 @@ static NSString * const kRootKey = @"kRootKey";
 
 -(void)reportHorizontalSwipe{
     CashViewController *cashController = [[CashViewController alloc]init];
-    [cashController setDetailItem:self.detailItem];
+    [cashController setDayId:self.dayId];
 
     UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:cashController];
     
@@ -94,51 +113,30 @@ static NSString * const kRootKey = @"kRootKey";
 }
 
 
--(void)viewWillDisappear:(BOOL)animated{
-    
-    NSLog(@"day master view controller disappear");
-
-    [super viewWillDisappear:animated];
-    NSString *filePath = [self dataFilePath];
-    
-    NSMutableData *data = [[NSMutableData alloc] init];
-    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc]
-                                 initForWritingWithMutableData:data];
-    [archiver encodeObject:self.objects forKey:kRootKey];
-    [archiver finishEncoding];
-    [data writeToFile:filePath atomically:YES];
-}
-
-
 - (void)viewWillAppear:(BOOL)animated {
     self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
     [super viewWillAppear:animated];
     
-    //get achive
-    NSString *filePath = [self dataFilePath];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-        if (!self.objects) {
-            self.objects = [[NSMutableArray alloc] init];
-        }
-        
-        NSData *data = [[NSMutableData alloc]
-                        initWithContentsOfFile:filePath];
-        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc]
-                                         initForReadingWithData:data];
-        self.objects = [unarchiver decodeObjectForKey:kRootKey];
-        [unarchiver finishDecoding];
+    
+    if (!self.objects) {
+        self.objects = [[NSMutableArray alloc] init];
     }
-}
+    
+    NSString * sql=[NSString stringWithFormat:@"select * from hourItem where dayId = %ld",(long)self.dayId];
+    FMResultSet *result=[dataBase executeQuery:sql];
+    while(result.next){
+        NSString *hourString =[result stringForColumn:@"hour"];
+        [self.objects addObject:hourString];
+    }
+ }
 
 - (NSString *)dataFilePath
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    return [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.archive",
-                                                               self.detailItem.day]];
+    NSString *documentDirectory = [paths objectAtIndex:0];
+    NSString *dbPath = [documentDirectory stringByAppendingPathComponent:@"MyDatabase.db"];
+    return dbPath;
 }
-
-
 
 - (void)showMenu:(UIButton *)sender
 {
@@ -166,7 +164,7 @@ static NSString * const kRootKey = @"kRootKey";
     first.alignment = NSTextAlignmentCenter;
     
     const CGFloat W = self.view.bounds.size.width;
-    const CGFloat H = self.view.bounds.size.height;
+//    const CGFloat H = self.view.bounds.size.height;
     
     [KxMenu showMenuInView:self.view
                   fromRect:CGRectMake(W - 105, 15, 100, 50)
@@ -179,15 +177,20 @@ static NSString * const kRootKey = @"kRootKey";
         self.objects = [[NSMutableArray alloc] init];
     }
     
-    //    [self.objects insertObject:self.constObjects[self.index] atIndex:self.index];
+    NSString * createHourItem = @"create table if not exists hourItem(id integer primary key autoincrement,hour text,type text,content text,isDone integer,dayId integer)";
     
-    HourObject *hour = [[HourObject alloc]init];
-    [hour setHour:sender.title];
-    [hour setType:@"Running"];
-    [hour setIsDone:NO];
-    [hour setContent:@"It is a beautiful day."];
+    BOOL c3= [dataBase executeUpdate:createHourItem];
+    if (c3) {
+        NSLog(@"Hour Item表创建成功.");
+    }
     
-    [self.objects insertObject:hour atIndex:self.index];
+    NSString * insertSqlHour=@"insert into hourItem(hour,type,content,isDone,dayId) values(?,?,?,?,?)";
+    bool inflag1=[dataBase executeUpdate:insertSqlHour,sender.title,@"Running",@"It is a beautiful day.",@(NO),@(self.dayId)];
+    if (inflag1) {
+        NSLog(@"insert successfully!");
+    }
+    
+    [self.objects insertObject:sender.title atIndex:self.index];
     [self.toAddObjects removeObject:sender.title];
     
     self.index += 1;
@@ -195,15 +198,9 @@ static NSString * const kRootKey = @"kRootKey";
     NSArray *tempArray = [[NSArray alloc]initWithArray:self.objects];
     
     tempArray = [(NSArray *)self.objects sortedArrayUsingComparator:^(id obj1, id obj2){
-        HourObject *hour1 = (HourObject *)obj1;
-        NSString *hour1String = hour1.hour;
-        NSArray *firstSplitArray = [hour1String componentsSeparatedByString:@":"];
-        hour1String = [firstSplitArray firstObject];
         
-        HourObject *hour2 = (HourObject *)obj2;
-        NSString *hour2String = hour2.hour;
-        NSArray *secondSplitArray = [hour2String componentsSeparatedByString:@":"];
-        hour2String = [secondSplitArray firstObject];
+        NSString *hour1String = (NSString *)obj1;
+        NSString *hour2String = (NSString *)obj2;
 
         if ([hour1String integerValue] > [hour2String integerValue]) {
             return (NSComparisonResult)NSOrderedDescending;
@@ -227,10 +224,20 @@ static NSString * const kRootKey = @"kRootKey";
     if ([[segue identifier] isEqualToString:@"showContent"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         
-        HourObject *hour = (HourObject *)self.objects[indexPath.row];
+        NSString *hour = (NSString *)self.objects[indexPath.row];
+        
+        NSString * sql=[NSString stringWithFormat:@"select id from hourItem where hour = '%@'",hour];
+        FMResultSet *result=[dataBase executeQuery:sql];
+        int ids = 0;
+        
+        while(result.next){
+            ids=[result intForColumn:@"id"];
+            NSLog(@"%d",ids);
+        }
         
         ContentViewController *controller = (ContentViewController *)[segue destinationViewController];
-        [controller setDetailItem:hour];
+        [controller setDetailItem:ids];
+        
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
     }
@@ -248,9 +255,11 @@ static NSString * const kRootKey = @"kRootKey";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DetailCell" forIndexPath:indexPath];
-    HourObject *hour = (HourObject *)self.objects[indexPath.row];
-    NSString *object = hour.hour;
-    cell.textLabel.text = [object description];
+    NSString *hour = (NSString *)self.objects[indexPath.row];
+    
+    //根据hour从数据库中hourItem的id
+//    NSString *object = hour.hour;
+    cell.textLabel.text = hour;
     return cell;
 }
 
@@ -261,7 +270,29 @@ static NSString * const kRootKey = @"kRootKey";
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        NSString *hour = (NSString *)self.objects[indexPath.row];
         [self.objects removeObjectAtIndex:indexPath.row];
+        
+        NSString * sql=[NSString stringWithFormat:@"select id from hourItem where hour = '%@'",hour];
+        FMResultSet *result=[dataBase executeQuery:sql];
+        int ids = 0;
+        
+        while(result.next){
+            ids=[result intForColumn:@"id"];
+            NSLog(@"%d",ids);
+        }
+
+        //删除数据
+        NSString * deleteSQL=[NSString stringWithFormat:@"delete from hourItem where id = %ld",(long)ids];
+        
+        BOOL res = [dataBase executeUpdate:deleteSQL];
+        if (!res) {
+            NSLog(@"error when delete item");
+        } else {
+            NSLog(@"success to delete item");
+        }
+        
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.

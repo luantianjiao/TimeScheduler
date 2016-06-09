@@ -8,6 +8,7 @@
 
 #import "ContentViewController.h"
 #import "Masonry.h"
+#import <FMDB.h>
 
 @interface ContentViewController ()
 
@@ -23,23 +24,45 @@
 @end
 
 @implementation ContentViewController
+FMDatabase *dataBase123;
 
-
--(void)setDetailItem:(HourObject *)newDetailItem{
+-(void)setDetailItem:(NSInteger)newDetailItem{
     if (_detailItem != newDetailItem) {
         _detailItem = newDetailItem;
     }
 }
 
+- (NSString *)dataFilePath
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory = [paths objectAtIndex:0];
+    NSString *dbPath = [documentDirectory stringByAppendingPathComponent:@"MyDatabase.db"];
+    return dbPath;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    NSLog(@"content view controller");
     // Do any additional setup after loading the view.
     self.pickerArray = [NSArray arrayWithObjects:@"Running",@"娱乐",@"Sleep",@"iOS", nil];
     
     [self configureView];
     
-//    self.title = self.detailItem;
-    self.navigationItem.title = self.detailItem.hour;
+    NSString *dbPath = [self dataFilePath];
+    dataBase123 = [FMDatabase databaseWithPath:dbPath] ;
+    if (![dataBase123 open]) {
+        NSLog(@"Could not open db.");
+        return ;
+    }
+    NSString * sql=[NSString stringWithFormat:@"select * from hourItem where id = %ld",(long)self.detailItem];
+    FMResultSet *result=[dataBase123 executeQuery:sql];
+    while(result.next){
+        self.navigationItem.title  = [result stringForColumn:@"hour"];
+        self.textField.text =[result stringForColumn:@"type"];
+        self.contentField.text = [result stringForColumn:@"content"];
+        self.switchBar.on = [result boolForColumn:@"isDone"];
+    }
 }
 
 -(void)configureView{
@@ -77,12 +100,6 @@
         make.height.mas_equalTo(50);
 //        make.width.mas_equalTo(self.view.frame.size.width - 150.0);
     }];
-
-    if (self.detailItem) {
-        self.textField.text = self.detailItem.type;
-        self.contentField.text = self.detailItem.content;
-        self.switchBar.on = self.detailItem.isDone;
-    }
 }
 
 - (UIPickerView *)selectPicker{
@@ -138,9 +155,18 @@
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
-    self.detailItem.type = self.textField.text;
-    self.detailItem.content = self.contentField.text;
-    self.detailItem.isDone = self.switchBar.on;
+    NSString *type = self.textField.text;
+    NSString *content = self.contentField.text;
+    bool isDone = self.switchBar.on;
+    
+    NSString * updateSQL=[NSString stringWithFormat:@"update 'hourItem' set 'type' = '%@', 'content' = '%@', 'isDone' = %@ where id = %ld",type,content,@(isDone),(long)self.detailItem];
+    
+    BOOL res = [dataBase123 executeUpdate:updateSQL];
+    if (!res) {
+        NSLog(@"error when update db table");
+    } else {
+        NSLog(@"success to update db table");
+    }
 }
 
 #pragma mark - UIPickerView

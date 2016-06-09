@@ -11,6 +11,6 @@
 
 @interface CashViewController : UITableViewController
 
-@property (strong, nonatomic) DayObject *detailItem;
+@property(assign, nonatomic) NSInteger dayId;
 
 @end

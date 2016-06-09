@@ -149,7 +149,6 @@
 			children = (
 				0F40CAB01CFB0DEE005BECCE /* MasterViewController.h */,
 				0F40CAB11CFB0DEE005BECCE /* MasterViewController.m */,
-				0FFC72F81CFBE03300FD4E73 /* frameworks */,
 				0F40CAAD1CFB0DE4005BECCE /* DayMasterViewController.h */,
 				0F40CAAE1CFB0DE4005BECCE /* DayMasterViewController.m */,
 				0F40CABB1CFB0FD3005BECCE /* ContentViewController.h */,
@@ -159,6 +158,7 @@
 				0F55428A1CFD5D0500E07865 /* CashPopUpViewController.h */,
 				0F55428B1CFD5D0500E07865 /* CashPopUpViewController.m */,
 				0F25C36B1CF6C250006FBB58 /* dataModel */,
+				0FFC72F81CFBE03300FD4E73 /* frameworks */,
 				0F57472E1CF2909B00FE51B3 /* AppDelegate.h */,
 				0F57472F1CF2909B00FE51B3 /* AppDelegate.m */,
 				0F5747371CF2909C00FE51B3 /* Main.storyboard */,

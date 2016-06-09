@@ -1,15 +1,20 @@
 PODS:
   - DateTools (1.7.0)
+  - FMDB (2.6.2):
+    - FMDB/standard (= 2.6.2)
+  - FMDB/standard (2.6.2)
   - Masonry (0.6.4)
   - STPopup (1.7.0)
 
 DEPENDENCIES:
   - DateTools
+  - FMDB
   - Masonry (~> 0.6.4)
   - STPopup
 
 SPEC CHECKSUMS:
   DateTools: 53288ee8b905fdc75897a1e6b5cc0144b14cba60
+  FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
   STPopup: 36b45120f51ab3cdf7a10c1b9032b7fc8eef75ac
 
